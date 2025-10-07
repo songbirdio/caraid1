@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CairAid - Book a Mechanic</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9fafb;
+    }
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+          /*logo*/
+      img {
+        height: 80px;
+        width: 80px;
+        align-items: center;
+        margin-top: 0px;
+      }
+    main {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1rem;
+    }
+    .card label {
+      font-size: 0.85rem;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .card input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      margin-top: 0.5rem;
+    }
+    .btn-primary {
+      background: #16a34a;
+      color: white;
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111;
+    }
+    .btn-location {
+      background: #2563eb;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    #map {
+      width: 100%;
+      height: 500px;
+      border-radius: 8px;
+    }
+    .status {
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .success { background: #dcfce7; color: #166534; }
+    .error { background: #fee2e2; color: #991b1b; }
+    .warn { background: #fef9c3; color: #854d0e; }
+
+    /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="CarAid">
+  <header>Book a Mechanic</header>
+
+  <main>
+    <!-- Left: Controls -->
+    <div class="card">
+      <label for="search">Search address or landmark</label>
+      <form id="searchForm">
+        <input type="text" id="search" placeholder="e.g. Ikeja, Lagos" />
+        <button type="submit" class="btn-secondary">Search</button>
+      </form>
+
+      <!-- Live location button -->
+      <button id="locateBtn" class="btn-location">📍 Use My Live Location</button>
+      <br>
+      <br>
+      <div>
+        <label>Selected Location</label>
+        <div id="locationInfo" style="font-size:0.9rem; color:#333;">
+          Click the map, search, or use live location to pick a spot.
+        </div>
+      </div>
+
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <button id="sendBtn" class="btn-primary">Send to Admins</button>
+        <button id="copyBtn" class="btn-secondary">Copy Link</button>
+      </div>
+
+      <div id="message" class="status" style="display:none;"></div>
+    </div>
+
+    <!-- Right: Map -->
+    <div>
+      <div id="map"></div>
+      <p style="font-size:0.85rem; color:#555; margin-top:0.5rem;">
+        Tip: Click anywhere on the map, search for an address, or use the “Use My Live Location” button.
+      </p>
+    </div>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    let map, marker, position = null, address = "";
+
+    // Initialize the map
+    function initMap() {
+      map = L.map("map").setView([6.5244, 3.3792], 12); // Lagos as fallback
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors"
+      }).addTo(map);
+
+      // Map click event
+      map.on("click", (e) => {
+        setMarker(e.latlng.lat, e.latlng.lng);
+        reverseGeocode(e.latlng.lat, e.latlng.lng);
+      });
+    }
+
+    // Place marker
+    function setMarker(lat, lng) {
+      if (marker) {
+        marker.setLatLng([lat, lng]);
+      } else {
+        marker = L.marker([lat, lng]).addTo(map);
+      }
+      position = { lat, lng };
+      updateInfo();
+    }
+
+    // Reverse geocode to get address
+    async function reverseGeocode(lat, lng) {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+        );
+        const data = await res.json();
+        address = data.display_name || "Unnamed location";
+        updateInfo();
+      } catch {
+        address = "Unable to fetch address";
+        updateInfo();
+      }
+    }
+
+    // Update info panel
+    function updateInfo() {
+      const info = document.getElementById("locationInfo");
+      if (position) {
+        info.innerHTML = `
+          <div>Lat: ${position.lat.toFixed(6)}</div>
+          <div>Lng: ${position.lng.toFixed(6)}</div>
+          <div><strong>Address:</strong> ${address}</div>
+        `;
+      }
+    }
+
+    // Handle search
+    document.getElementById("searchForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const q = document.getElementById("search").value.trim();
+      if (!q) return;
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q)}&limit=1`
+        );
+        const results = await res.json();
+        if (results.length > 0) {
+          const { lat, lon } = results[0];
+          map.setView([lat, lon], 15);
+          setMarker(parseFloat(lat), parseFloat(lon));
+          reverseGeocode(lat, lon);
+        } else {
+          showMessage("No results found.", "warn");
+        }
+      } catch {
+        showMessage("Search failed.", "error");
+      }
+    });
+
+    // Use live location
+    document.getElementById("locateBtn").addEventListener("click", () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            map.setView([lat, lng], 16);
+            setMarker(lat, lng);
+            reverseGeocode(lat, lng);
+            showMessage("Live location detected.", "success");
+          },
+          () => showMessage("Unable to fetch live location.", "error"),
+          { enableHighAccuracy: true }
+        );
+      } else {
+        showMessage("Geolocation not supported by this browser.", "error");
+      }
+    });
+
+    // Send to Admins (demo only — no real backend)
+    document.getElementById("sendBtn").addEventListener("click", () => {
+      if (!position) {
+        showMessage("Please select a location first.", "error");
+        return;
+      }
+      // Simulated send
+      console.log("Sending to admins:", { ...position, address });
+      showMessage("Location sent to admins (simulated).", "success");
+    });
+
+    // Copy share link
+    document.getElementById("copyBtn").addEventListener("click", () => {
+      if (!position) {
+        showMessage("Please select a location first.", "error");
+        return;
+      }
+      const link = `${window.location.origin}/share-location?lat=${position.lat}&lng=${position.lng}`;
+      navigator.clipboard.writeText(link)
+        .then(() => showMessage("Share link copied!", "success"))
+        .catch(() => showMessage("Failed to copy link.", "error"));
+    });
+
+    // Show status messages
+    function showMessage(text, type) {
+      const msg = document.getElementById("message");
+      msg.innerText = text;
+      msg.className = `status ${type}`;
+      msg.style.display = "block";
+    }
+
+    // Start map
+    initMap();
+  </script>
+</body>
+</html>

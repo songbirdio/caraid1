@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CairAid - Advanced Settings</title>
+  <style>
+   /* Fancy Settings Page CSS */
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #f0f4ff, #e0e7ff, #f5f3ff);
+  margin: 0;
+  padding: 0;
+  color: #1f2937;
+}
+
+header {
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  color: white;
+  padding: 1.2rem;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+main {
+  max-width: 950px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Fancy card with glassmorphism */
+.card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 1.5rem 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding-bottom: 0.5rem;
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Form inputs */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #374151;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #6366f1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Fancy toggle switches */
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.toggle input {
+  appearance: none;
+  width: 48px;
+  height: 24px;
+  background: #d1d5db;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.toggle input:checked {
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+}
+.toggle input:before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle input:checked:before {
+  transform: translateX(24px);
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  color: white;
+}
+.btn-primary:hover {
+  background: linear-gradient(90deg, #15803d, #16a34a);
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+  color: white;
+}
+.btn-danger:hover {
+  background: linear-gradient(90deg, #b91c1c, #dc2626);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #111;
+}
+.btn-secondary:hover {
+  background: #d1d5db;
+  transform: translateY(-2px);
+}
+
+/* Popup modal */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 420px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  animation: fadeIn 0.4s ease;
+}
+.modal-content h3 {
+  margin-bottom: 1rem;
+  color: #1f2937;
+  font-size: 1.2rem;
+}
+.modal-content p {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  color: #374151;
+}
+    /* Footer Note */
+    .footer-note {
+      text-align: center;
+      justify-content: center;
+      margin-top: 20px;
+      position: center;
+      font-size: 12px;
+      color: #0e2a3b;
+    }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header>Settings</header>
+
+  <!-- Popup Modal -->
+  <div id="popup" class="modal">
+    <div class="modal-content">
+      <h3>⚠ Action Required</h3>
+      <p>
+        To enjoy full CairAid services, please activate:<br><br>
+        ✅ Data Collection <br>
+        ✅ Live Location Sharing
+      </p>
+      <button class="btn-primary" onclick="closePopup()">OK, Got It</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- Profile Settings -->
+    <div class="card">
+      <h2>Profile Settings</h2>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="John Doe" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+234 812 345 6789" />
+      </div>
+      <div class="form-group">
+        <label>Profile Picture</label>
+        <input type="file" />
+      </div>
+      <button class="btn-primary">Save Profile</button>
+    </div>
+
+    <!-- Security Settings -->
+    <div class="card">
+      <h2>Security</h2>
+      <div class="form-group">
+        <label>Change Password</label>
+        <input type="password" placeholder="New Password" />
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" placeholder="Confirm New Password" />
+      </div>
+      <button class="btn-primary">Update Password</button>
+
+      <div class="toggle">
+        <span>Two-Factor Authentication (2FA)</span>
+        <input type="checkbox" id="toggle2fa" />
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="card">
+      <h2>Notifications</h2>
+      <div class="toggle">
+        <span>Email Notifications</span>
+        <input type="checkbox" checked />
+      </div>
+      <div class="toggle">
+        <span>SMS Notifications</span>
+        <input type="checkbox" />
+      </div>
+      <div class="toggle">
+        <span>Push Notifications</span>
+        <input type="checkbox" />
+      </div>
+    </div>
+
+    <!-- Privacy -->
+    <div class="card">
+      <h2>Privacy</h2>
+      <div class="toggle">
+        <span>Share Live Location</span>
+        <input type="checkbox" id="liveLocationToggle" checked />
+      </div>
+      <div class="toggle">
+        <span>Allow Marketing Emails</span>
+        <input type="checkbox" />
+      </div>
+      <div class="toggle">
+        <span>Allow Data Collection</span>
+        <input type="checkbox" id="dataCollectionToggle" />
+      </div>
+    </div>
+
+    <!-- Payment Preferences -->
+    <div class="card">
+      <h2>Payment Preferences</h2>
+      <div class="form-group">
+        <label>Default Payment Method</label>
+        <select>
+          <option>Credit Card</option>
+          <option>Debit Card</option>
+          <option>Bank Transfer</option>
+          <option>Mobile Wallet</option>
+        </select>
+      </div>
+      <button class="btn-primary">Save Payment Preferences</button>
+    </div>
+
+    <!-- App Preferences -->
+    <div class="card">
+      <h2>App Preferences</h2>
+      <div class="form-group">
+        <label>Theme</label>
+        <select id="themeSelect">
+          <option>Light</option>
+          <option>Dark</option>
+          <option>System Default</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Language</label>
+        <select>
+          <option>English</option>
+          <option>French</option>
+          <option>Spanish</option>
+          <option>Yoruba</option>
+          <option>Hausa</option>
+          <option>Igbo</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Support & Account -->
+    <div class="card">
+      <h2>Support & Account</h2>
+      <button class="btn-secondary">Contact Support</button>
+      <button class="btn-danger">Deactivate Account</button>
+    </div>
+  </main>
+
+ <!-- Footer -->
+<p class="footer-note">© 2025 | CarAid</p>
+
+
+  <script>
+    // Show popup automatically when page loads
+    window.onload = function() {
+      document.getElementById("popup").style.display = "flex";
+    };
+
+    // Close popup
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+      // Auto-activate toggles (optional)
+      document.getElementById("liveLocationToggle").checked = true;
+      document.getElementById("dataCollectionToggle").checked = true;
+    }
+
+    // Example theme switcher
+    document.getElementById("themeSelect").addEventListener("change", (e) => {
+      if (e.target.value === "Dark") {
+        document.body.style.background = "#1f2937";
+        document.body.style.color = "white";
+      } else {
+        document.body.style.background = "#f3f4f6";
+        document.body.style.color = "black";
+      }
+    });
+
+    // Example toggle for 2FA
+    document.getElementById("toggle2fa").addEventListener("change", (e) => {
+      if (e.target.checked) {
+        alert("Two-Factor Authentication enabled.");
+      } else {
+        alert("Two-Factor Authentication disabled.");
+      }
+    });
+  </script>
+</body>
+</html>

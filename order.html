@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CairAid Demand Interface</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <style>
+    /* General */
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    /* Header */
+    header {
+      background: #ff6600;
+      color: white;
+      padding: -0.3rem;
+      text-align: center;
+      font-size: 1rem;
+      letter-spacing: 1.5px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Layout */
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      display: grid;
+      gap: 1.8rem;
+    }
+
+    /*logo*/
+    img {
+      height: 80px;
+      width: 80px;
+      align-items: center;
+      margin-top: 0px;
+    }
+
+    /* Card Style */
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      transition: all 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      border-left: 5px solid #ff6600;
+      padding-left: 0.8rem;
+      font-weight: 600;
+      color: #222;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #444;
+    }
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    select:focus,
+    textarea:focus {
+      border-color: #ff6600;
+      box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.2);
+      outline: none;
+    }
+    textarea {
+      resize: none;
+    }
+
+    /* Buttons */
+    button,
+    a.btn-accent {
+      display: inline-block;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    /* Primary Button */
+    .btn-primary {
+      background: #ff6600;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #e65c00;
+      transform: translateY(-2px);
+    }
+
+    /* Accent (Call) Button */
+    .btn-accent {
+      background: linear-gradient(90deg, #ff6600, #ff8533);
+      color: white;
+    }
+    .btn-accent:hover {
+      background: linear-gradient(90deg, #e65c00, #ff751a);
+      transform: translateY(-2px);
+    }
+
+    /* Secondary Button */
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #333;
+    }
+    .btn-secondary:hover {
+      background: #e5e7eb;
+      transform: translateY(-2px);
+    }
+
+    /* Modal popup */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #fff;
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 420px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      animation: fadeIn 0.4s ease;
+    }
+    .modal-content h3 {
+      margin-bottom: 1rem;
+      color: #ff6600;
+      font-size: 1.2rem;
+    }
+    .modal-content p {
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* ✅ Universal Responsive Template */
+
+    /* Default: Desktop / Large Screens */
+    body {
+      font-size: 18px;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Smartphones (portrait & small screens ≤600px) */
+    @media only screen and (max-width: 600px) {
+      body {
+        font-size: 14px;
+        padding: 8px;
+      }
+      .container,
+      .chatroom,
+      .page-section {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+      img,
+      video,
+      iframe {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
+    /* Tablets (601px – 1024px) */
+    @media only screen and (min-width: 601px) and (max-width: 1024px) {
+      body {
+        font-size: 16px;
+      }
+      .container,
+      .chatroom,
+      .page-section {
+        width: 90% !important;
+        margin: auto;
+      }
+    }
+
+    /* Landscape & Extra-wide screens */
+    @media only screen and (orientation: landscape) {
+      body {
+        font-size: 17px;
+      }
+      .container,
+      .chatroom,
+      .page-section {
+        max-width: 95%;
+        margin: auto;
+      }
+    }
+  </style>
+  <body>
+            <img src="logo.png" alt="CarAid">
+    <header>
+      <h1>Place a Demand</h1>
+    </header>
+
+    <main>
+      <!-- Complaint Severity -->
+      <section class="card">
+        <h2>Complaint Severity</h2>
+        <form id="complaintForm">
+          <div class="form-group">
+            <label for="severity">Select severity of issue:</label>
+            <select id="severity" required>
+              <option value="">-- Select Severity --</option>
+              <option value="severe">Severe</option>
+              <option value="mild">Mild</option>
+              <option value="not-serious">Not Too Serious</option>
+              <option value="towing">Car Towing Services</option>
+            </select>
+          </div>
+
+          <!-- Formal Complaint -->
+          <div class="form-group">
+            <label for="complaint"
+              >Describe the issue and expected tools/spares:</label
+            >
+            <textarea
+              id="complaint"
+              rows="5"
+              placeholder="E.g. Flat tire, bring spare tire, bring car oil along and jack..."
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">Submit Complaint</button>
+        </form>
+      </section>
+
+      <!-- Call to Nearest Office -->
+      <section class="card">
+        <h2>Contact Nearest Office</h2>
+        <p>Speak with us</p>
+        <a href="tel:+2348000000000" id="callBtn" class="btn-accent"
+          >📞 Call CarAid</a
+        >
+      </section>
+    </main>
+
+    <!-- Popup Modal for Reminder -->
+    <div id="reminderModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h3>Reminder</h3>
+        <p>
+          ✅ Please tap the <strong>+</strong> button to activate data
+          collection and share your live location.
+        </p>
+        <button class="btn-secondary" onclick="closeModal()">Got It</button>
+      </div>
+    </div>
+
+    <script>
+      // Complaint Form Handler
+      document
+        .getElementById("complaintForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert(
+            "Your complaint has been submitted successfully ✅. Our team will review and dispatch a mechanic."
+          );
+          this.reset();
+        });
+
+      // Call Button - show reminder after click
+      document.getElementById("callBtn").addEventListener("click", function () {
+        setTimeout(() => {
+          document.getElementById("reminderModal").style.display = "flex";
+        }, 2000); // show reminder after 2 seconds
+      });
+
+      // Close modal
+      function closeModal() {
+        document.getElementById("reminderModal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

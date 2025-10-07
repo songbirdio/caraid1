@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarAid - Customer Details</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #1f3c88, #0e2a3b);
+      display: flex;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .details-container {
+      display: flex;
+      flex-wrap: wrap; /* allows wrapping */
+      gap: 20px; /* space between cards */
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .details-card {
+      flex: 1 1 100%; /* each card takes full width */
+      min-height: 280px; /* big enough to show "1.5 card" feel */
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      animation: slideIn 0.8s ease-out;
+      position: relative;
+    }
+    .details-container .details-card:first-child {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+    }
+    /* Profile Image */
+    .details-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #1f3c88;
+      margin-bottom: 15px;
+    }
+
+    /* Card Headings */
+    .details-card h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #0e2a3b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Details */
+    .details-card p {
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: #333;
+      width: 100%;
+      background: #f4f6f9;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+
+    .details-card p strong {
+      color: #ff6600;
+    }
+
+    .unique-code {
+      font-weight: bold;
+      color: #ff6600;
+      margin-top: auto;
+      font-size: 15px;
+      background: #fff3e6;
+      padding: 10px 14px;
+      border-radius: 8px;
+      box-shadow: inset 0 0 4px #0e2a3b(0,0,0,0.1);
+      width: 100%;
+    }
+
+    /* Footer Note */
+    .footer-note {
+      text-align: center;
+      margin-top: 20px;
+      position: center;
+      width: fit-content;
+      margin: auto;
+      font-size: 12px;
+      color: #ff6600;
+    }
+
+    /* Slide in animation */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="details-container">
+    <!-- Card 1 -->
+    <div class="details-card">
+      <img src="customer-profile.jpg" alt="">
+      <h2>Personal Details</h2>
+      <p><strong>Name:</strong> Daniel Johnson</p>
+      <p class="unique-code" id="uniqueCode"></p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="details-card">
+      <h2>Contact Info</h2>
+      <p><strong>Email:</strong> daniel@example.com</p>
+      <p><strong>Phone:</strong> +234 800 000 0000</p>
+      <p><strong>Facebook:</strong> Daniel Johnson</p>
+      <p><strong>Twitter:</strong> @danieljohnson</p>      
+    </div>
+
+    <!-- Card 3 -->
+    <div class="details-card">
+      <h2>Home Address</h2>
+      <p><strong>State of Residence:</strong> Lagos</p>
+      <p><strong>City:</strong> Ikeja</p>
+      <p><strong>Street:</strong> 123 Main St</p>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="details-card">
+      <h2>Car Details</h2>
+      <p><strong>Make:</strong> Toyota</p>
+      <p><strong>Model:</strong> Camry</p>
+      <p><strong>Year:</strong> 2020</p>
+      <p><strong>License Plate:</strong> ABC-1234</p>
+      <p><strong>VIN:</strong> 1HGBH41JXMN109186</p>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="details-card">
+      <h2>Other Cars</h2>
+      <p><strong>Make:</strong> Honda</p>
+      <p><strong>Model:</strong> Accord</p>
+      <p><strong>Year:</strong> 2019</p>
+      <p><strong>License Plate:</strong> XYZ-5678</p>
+      <p><strong>VIN:</strong> 2HGBH41JXMN109186</p>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="details-card">
+      <h2>Other Cars</h2>
+      <p><strong>Make:</strong> Honda</p>
+      <p><strong>Model:</strong> Accord</p>
+      <p><strong>Year:</strong> 2019</p>
+      <p><strong>License Plate:</strong> XYZ-5678</p>
+      <p><strong>VIN:</strong> 2HGBH41JXMN109186</p>
+    </div>
+
+ <!-- Footer -->
+<p class="footer-note">© 2025 | CarAid</p>
+  </div>
+ 
+
+  <script>
+    // Generate unique customer code (CU + 8 digits)
+    let uniqueCode = "CU" + Math.floor(10000000 + Math.random() * 90000000);
+    document.getElementById("uniqueCode").textContent =
+      "Customer Code: " + uniqueCode;
+  </script>
+
+</body>
+</html>

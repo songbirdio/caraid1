@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarAid - Payment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    
+    /* Footer Note */
+    .footer-note {
+      text-align: center;
+      justify-content: center;
+      margin-top: 20px;
+      position: center;
+      font-size: 12px;
+      color: #0e2a3b;
+    }
+    /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+
+  <div class="w-full max-w-4xl bg-white shadow-2xl rounded-2xl p-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Choose Your Payment Method</h1>
+
+    <!-- Payment Options -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Credit/Debit Card -->
+      <div class="border rounded-xl p-6 shadow hover:shadow-lg cursor-pointer bg-gradient-to-b from-gray-50 to-gray-100">
+        <i class="fas fa-credit-card text-3xl text-[#ff6600] mb-4"></i>
+        <h2 class="text-lg font-semibold mb-2">Credit / Debit Card</h2>
+        <p class="text-gray-600 text-sm mb-4">Pay securely using your Visa, MasterCard, or Verve card.</p>
+        <button class="w-full bg-[#ff6600] text-white px-4 py-2 rounded-lg hover:bg-orange-700">Pay Now</button>
+      </div>
+
+      <!-- Bank Transfer -->
+      <div class="border rounded-xl p-6 shadow hover:shadow-lg cursor-pointer bg-gradient-to-b from-gray-50 to-gray-100">
+        <i class="fas fa-university text-3xl text-[#ff6600] mb-4"></i>
+        <h2 class="text-lg font-semibold mb-2">Bank Transfer</h2>
+        <p class="text-gray-600 text-sm mb-4">Transfer directly from your bank account into CarAid’s account.</p>
+        <button class="w-full bg-[#ff6600] text-white px-4 py-2 rounded-lg hover:bg-orange-700">View Details</button>
+      </div>
+
+      <!-- Mobile Wallet -->
+      <div class="border rounded-xl p-6 shadow hover:shadow-lg cursor-pointer bg-gradient-to-b from-gray-50 to-gray-100">
+        <i class="fas fa-mobile-alt text-3xl text-[#ff6600] mb-4"></i>
+        <h2 class="text-lg font-semibold mb-2">Mobile Wallet</h2>
+        <p class="text-gray-600 text-sm mb-4">Pay quickly using wallets like PayPal, Opay, or Flutterwave.</p>
+        <button class="w-full bg-[#ff6600] text-white px-4 py-2 rounded-lg hover:bg-orange-700">Continue</button>
+      </div>
+
+    </div>
+
+    <!-- Subscription Models -->
+    <h2 class="text-xl font-bold text-gray-800 mt-10 mb-4">Subscription Models</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Premium -->
+      <div class="border rounded-xl p-6 shadow hover:shadow-lg bg-gradient-to-b from-white to-gray-100">
+        <h3 class="text-lg font-semibold mb-2">Premium</h3>
+        <p class="text-2xl font-bold mb-2">₦5,000 <span class="text-sm text-gray-500">/ month</span></p>
+        <p class="text-gray-600 text-sm mb-4">Access basic roadside assistance services.</p>
+        <button class="w-full bg-[#ff6600] text-white px-4 py-2 rounded-lg hover:bg-orange-700">Subscribe</button>
+      </div>
+
+      <!-- Executive -->
+      <div class="border rounded-xl p-6 shadow hover:shadow-lg bg-gradient-to-b from-white to-gray-100">
+        <h3 class="text-lg font-semibold mb-2">Executive</h3>
+        <p class="text-2xl font-bold mb-2">₦10,000 <span class="text-sm text-gray-500">/ month</span></p>
+        <p class="text-gray-600 text-sm mb-4">Includes premium services + free towing within Lagos.</p>
+        <button class="w-full bg-[#ff6600] text-white px-4 py-2 rounded-lg hover:bg-orange-700">Subscribe</button>
+      </div>
+
+      <!-- Presidential -->
+      <div class="border rounded-xl p-6 shadow hover:shadow-lg bg-gradient-to-b from-white to-gray-100">
+        <h3 class="text-lg font-semibold mb-2">Presidential</h3>
+        <p class="text-2xl font-bold mb-2">₦20,000 <span class="text-sm text-gray-500">/ month</span></p>
+        <p class="text-gray-600 text-sm mb-4">All executive services + priority response & free nationwide towing.</p>
+        <button class="w-full bg-[#ff6600] text-white px-4 py-2 rounded-lg hover:bg-orange-700">Subscribe</button>
+      </div>
+
+    </div>
+
+ <!-- Footer -->
+<p class="footer-note">© 2025 | CarAid</p>
+
+ <!-- Font Awesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

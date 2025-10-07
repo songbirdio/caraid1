@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications - CarAid</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f6f9;
+      }
+
+      /* Notification Bell */
+      .notif-btn {
+        position: relative;
+        background: none;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: #1f3c88;
+        margin: 20px;
+      }
+
+      /* Red dot counter */
+      .notif-btn .badge {
+        position: absolute;
+        top: -6px;
+        right: -8px;
+        background: #ff6600;
+        color: white;
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 50%;
+      }
+
+      /* Dropdown Panel */
+      .notif-box {
+        position: absolute;
+        top: 60px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1000;
+        height: 100%;
+        width: 100%;
+      }
+
+      .notif-box.active {
+        display: flex;
+      }
+
+      .notif-header {
+        background: #1f3c88;
+        color: white;
+        padding: 12px;
+        font-weight: bold;
+      }
+
+      .notif-list {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .notif-item {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .notif-item:hover {
+        background: #f9fafc;
+      }
+
+      .notif-item.unread {
+        background: #eef3ff;
+        font-weight: bold;
+      }
+
+      .notif-footer {
+        text-align: center;
+        padding: 10px;
+        background: #f4f6f9;
+        font-size: 14px;
+        cursor: pointer;
+        color: #1f3c88;
+      }
+
+      .notif-footer:hover {
+        text-decoration: underline;
+      }
+
+      /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <!-- Notification Bell -->
+    <button id="notifBtn" class="notif-btn">
+      <i class="fas fa-bell"></i>
+      <span class="badge" id="notifCount">3</span>
+    </button>
+
+    <!-- Dropdown Notifications -->
+    <div id="notifBox" class="notif-box">
+      <div class="notif-header">Notifications</div>
+      <div class="notif-list" id="notifList">
+        <!-- Notifications will be injected here -->
+      </div>
+      <div class="notif-footer" onclick="markAllRead()">Mark all as read</div>
+    </div>
+
+    <script>
+      // Mock notifications
+      let notifications = [
+        {
+          id: 1,
+          title: "Mechanic Assigned",
+          message: "Your request has been accepted by John (Mechanic).",
+          status: "unread",
+        },
+        {
+          id: 2,
+          title: "Payment Successful",
+          message: "₦10,000 has been paid successfully.",
+          status: "unread",
+        },
+        {
+          id: 3,
+          title: "Promo Reward",
+          message: "You’ve earned 500 loyalty points!",
+          status: "read",
+        },
+      ];
+
+      const notifBtn = document.getElementById("notifBtn");
+      const notifBox = document.getElementById("notifBox");
+      const notifList = document.getElementById("notifList");
+      const notifCount = document.getElementById("notifCount");
+
+      // Toggle dropdown
+      notifBtn.addEventListener("click", () => {
+        notifBox.classList.toggle("active");
+        renderNotifications();
+      });
+
+      // Render notifications
+      function renderNotifications() {
+        notifList.innerHTML = notifications
+          .map(
+            (n) => `
+        <div class="notif-item ${
+          n.status === "unread" ? "unread" : ""
+        }" onclick="markAsRead(${n.id})">
+          <strong>${n.title}</strong><br>
+          <small>${n.message}</small>
+        </div>
+      `
+          )
+          .join("");
+
+        updateBadge();
+      }
+
+      // Update badge count
+      function updateBadge() {
+        const unread = notifications.filter(
+          (n) => n.status === "unread"
+        ).length;
+        if (unread > 0) {
+          notifCount.style.display = "inline-block";
+          notifCount.textContent = unread;
+        } else {
+          notifCount.style.display = "none";
+        }
+      }
+
+      // Mark single notification as read
+      function markAsRead(id) {
+        notifications = notifications.map((n) =>
+          n.id === id ? { ...n, status: "read" } : n
+        );
+        renderNotifications();
+      }
+
+      // Mark all as read
+      function markAllRead() {
+        notifications = notifications.map((n) => ({ ...n, status: "read" }));
+        renderNotifications();
+      }
+
+      // Initial load
+      renderNotifications();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarAid - Welcome</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to right, #1f3c88, #ff6600);
+      font-family: Arial, sans-serif;
+
+    }
+
+
+    .message-container {
+      position: relative;
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+      color: white;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .message {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .message.active {
+      opacity: 1;
+    }
+
+    .message img {
+      width: 100px;
+      height: 100px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="message-container">
+    <div class="message active" id="msg1">
+   <img src="logo.png" alt="Welcome">
+      <p>Welcome to CarAid!</p>
+    </div>
+    <div class="message" id="msg2">
+    <img src="logo.png" alt="Congratulations">
+      <p>Congratulations on joining us!</p>
+    </div>
+    <div class="message" id="msg3">
+      <img src="logo.png" alt="Personalized">
+      <p id="personalMessage">Hello, Dear customer!</p>
+    </div>
+  </div>
+
+  <script>
+    // Simulate a personalized message
+    const customerName = "Daniel"; // Replace dynamically from registration
+    document.getElementById("personalMessage").textContent =
+      `Welcome ${customerName}, we’re excited to serve you!`;
+
+    // Animation sequence
+    const messages = document.querySelectorAll(".message");
+    let index = 0;
+
+    function showNextMessage() {
+      if (index < messages.length - 1) {
+        messages[index].classList.remove("active");
+        index++;
+        messages[index].classList.add("active");
+      } else {
+        // After last message → redirect to home page
+        setTimeout(() => {
+          window.location.href = "customerhome.html";
+        }, 1500);
+      }
+    }
+
+    setInterval(showNextMessage, 2500); // 2.5s per message
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarAid Mechanic Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* RESET & BASE STYLES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f6f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /*logo*/
+      img {
+        height: 50px;
+        width: 50px;
+        align-items: left;
+        z-index: 4;
+      }
+
+    /* NAVBAR */
+    nav {
+      background: linear-gradient(50deg, #ff6600, #1f3c88);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    nav h1 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .sos-btn {
+      background: #ff6600;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sos-btn:hover {
+      background: #e05500;
+    }
+
+.profile-pic {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;              /* makes it a perfect circle */
+  object-fit: cover;               /* ensures image fills the circle */
+  border: 1px solid #ff6600;       /* adds brand-colored border */
+  cursor: pointer;                 /* pointer cursor on hover */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f4f4f4;       /* fallback bg */
+}
+
+.profile-pic:hover {
+  transform: scale(1.05);          /* smooth zoom on hover */
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);  /* glowing border effect */
+}
+
+
+    /* MAIN LAYOUT */
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    @media (min-width: 992px) {
+      .main-container {
+        flex-direction: row;
+      }
+    }
+
+    /* MAP SECTION */
+    .map-section {
+      flex: 2;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    .map-section h2 {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .map-section iframe {
+      width: 100%;
+      height: 380px;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .map-section p {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    /* RIGHT CONTROL SECTION */
+    .right-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    .card h3 {
+      font-size: 17px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    /* COMMUNICATION CARD */
+    .comm-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+
+    .comm-buttons button {
+      background: none;
+      border: none;
+      color: #1f3c88;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.3s ease;
+    }
+
+    .comm-buttons button:hover {
+      color: #ff6600;
+    }
+
+    .comm-buttons i {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    /* JOB REQUEST CARD */
+    .job-details {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 12px;
+    }
+
+    .job-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 10px;
+    }
+
+    .accept-btn,
+    .reject-btn {
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .accept-btn {
+      background: #16a34a;
+    }
+
+    .accept-btn:hover {
+      background: #15803d;
+    }
+
+    .reject-btn {
+      background: #dc2626;
+    }
+
+    .reject-btn:hover {
+      background: #b91c1c;
+    }
+
+    .reject-box {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .reject-box select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 8px;
+    }
+
+    .reject-box button {
+      width: 100%;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .reject-box button:hover {
+      background: #222;
+    }
+
+    /* VISUAL REPORT */
+    .report-section input,
+    .report-section textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .report-section button {
+      width: 100%;
+      padding: 12px;
+      background: #1f3c88;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .report-section button:hover {
+      background: #162d68;
+    }
+
+    /* FOOTER */
+    footer {
+      background: white;
+      text-align: center;
+      padding: 10px;
+      font-size: 13px;
+      color: #777;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
+      margin-top: auto;
+    }
+    .map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alert-dot {
+  width: 14px;
+  height: 14px;
+  background: red;
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  animation: blink 1s infinite;
+  display: none; /* hidden by default */
+}
+
+@keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+.location-info {
+  margin-top: 12px;
+  background: #f8f9fc;
+  border-radius: 10px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-size: 14px;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+   <img src="logo.png" alt="CarAid">
+    <div class="nav-right">
+     <a href="sos.html"><button class="sos-btn">
+        <i class="fas fa-exclamation-triangle"></i> SOS</button>
+      </a>
+<a href="profile.html">
+  <img src="https://via.placeholder.com/50" alt="" class="profile-pic">
+</a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-container">
+
+<!-- MAP SECTION -->
+<div class="map-section">
+  <div class="map-header">
+    <h2>
+      <i class="fas fa-map-marked-alt" style="color:#ff6600;"></i> Active Job Location
+    </h2>
+    <div class="alert-dot" id="alertDot" title="New Job Alert"></div>
+  </div>
+
+  <iframe
+    id="jobMap"
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976737.828!2d5.4!3d9.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1041a5e25b0219%3A0xb44130f6493db15c!2sNigeria!5e0!3m2!1sen!2sng!4v1620291211234!5m2!1sen!2sng"
+  ></iframe>
+
+  <div class="location-info">
+    <p><strong>Location:</strong> <span id="locationName">No active job</span></p>
+    <p><strong>Latitude:</strong> <span id="latitude">-</span></p>
+    <p><strong>Longitude:</strong> <span id="longitude">-</span></p>
+  </div>
+  <p style="text-align:center; color:#666; font-size:14px;">Track customer demand location in real-time.</p>
+</div>
+
+
+    <!-- RIGHT CONTROL SECTION -->
+    <div class="right-section">
+
+<!-- JOB REQUEST CARD -->
+<div class="card" id="jobCard">
+  <h3><i class="fas fa-clipboard-check" style="color:#ff6600;"></i> Job Request</h3>
+  <p class="job-details">Customer: <strong>Daniel Johnson</strong> | Fault: <em>Engine not starting</em></p>
+  <div class="job-buttons">
+    <button class="accept-btn">Accept</button>
+    <button class="reject-btn" onclick="toggleRejectBox()">Reject</button>
+  </div>
+
+  <div id="rejectBox" class="reject-box">
+    <p style="font-size:13px; color:#555;">Reason for rejection:</p>
+    <select id="rejectReason">
+      <option value="">-- Select reason --</option>
+      <option>Busy with another job</option>
+      <option>Location too far</option>
+      <option>Issue not within my expertise</option>
+    </select>
+    <button onclick="submitRejection()">Submit Reason</button>
+  </div>
+</div>
+
+<!-- Chat Section (hidden initially) -->
+<div class="card" id="chatSection" style="display:none;">
+  <h3><i class="fas fa-comments" style="color:#ff6600;"></i> Chat with Control Office</h3>
+  <div id="chatBox" class="chat-box" style="height:220px; overflow-y:auto; background:#f8f9fc; padding:10px; border-radius:10px; margin-bottom:10px;"></div>
+
+  <div class="chat-input" style="display:flex; gap:10px;">
+    <input type="text" id="mechanicResponse" placeholder="Enter your reply (e.g., 2 hours 30 mins)" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc;">
+    <button onclick="sendResponse()" style="background:#1f3c88; color:white; border:none; padding:8px 16px; border-radius:8px;">Send</button>
+  </div>
+</div>
+
+
+      <!-- COMMUNICATION CARD -->
+      <div class="card">
+        <h3><i class="fas fa-headset" style="color:#ff6600;"></i> Communication</h3>
+        <div class="comm-buttons">
+          <button><i class="fas fa-phone-alt"></i><br>Call Customer</button>
+          <button><i class="fas fa-building"></i><br>Control Office</button>
+          <button><i class="fas fa-comments"></i><br>Chat</button>
+        </div>
+      </div>
+
+
+
+      <!-- VISUAL REPORT CARD -->
+      <div class="card report-section">
+        <h3><i class="fas fa-camera" style="color:#ff6600;"></i> Visual Report</h3>
+        <input type="file" accept="image/*,video/*">
+        <textarea rows="3" placeholder="Describe the fault..."></textarea>
+        <button>Send Report</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>© 2025 CarAid | Mechanic Dashboard</footer>
+
+  <!-- JS -->
+  <script>
+    function toggleRejectBox() {
+      const box = document.getElementById("rejectBox");
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+
+  let alertActive = false; // track alert state
+
+  // Function to trigger new job alert
+  function newJobAlert(lat, lng, place) {
+    const alertDot = document.getElementById("alertDot");
+    const jobMap = document.getElementById("jobMap");
+    const locationName = document.getElementById("locationName");
+    const latitude = document.getElementById("latitude");
+    const longitude = document.getElementById("longitude");
+
+    // Activate alert
+    alertDot.style.display = "block";
+    alertActive = true;
+
+    // Update map to customer's coordinates
+    const newMapURL = `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+    jobMap.src = newMapURL;
+
+    // Update displayed info
+    locationName.textContent = place;
+    latitude.textContent = lat;
+    longitude.textContent = lng;
+  }
+
+  // Function to stop alert manually
+  function stopAlert() {
+    const alertDot = document.getElementById("alertDot");
+    alertDot.style.display = "none";
+    alertActive = false;
+  }
+
+  // Handle Accept Button
+  const acceptBtn = document.querySelector(".accept-btn");
+  if (acceptBtn) {
+    acceptBtn.addEventListener("click", () => {
+      if (alertActive) {
+        stopAlert(); // stop blinking immediately
+      }
+      alert("✅ Job Accepted. Navigating to customer location...");
+    });
+  }
+
+  // Simulate an incoming job after 5 seconds
+  setTimeout(() => {
+    newJobAlert(6.5244, 3.3792, "Lagos, Nigeria");
+  }, 5000);
+
+ 
+  function toggleRejectBox() {
+    const box = document.getElementById("rejectBox");
+    box.style.display = box.style.display === "block" ? "none" : "block";
+  }
+
+  function submitRejection() {
+    const reason = document.getElementById("rejectReason").value;
+    if (!reason) {
+      alert("⚠️ Please select a reason for rejecting the job.");
+      return;
+    }
+
+    // Simulate sending rejection
+    alert("📤 Reason sent: " + reason);
+
+    // Hide job card and open chat
+    document.getElementById("jobCard").style.display = "none";
+    document.getElementById("chatSection").style.display = "block";
+
+    // Auto message from Control Office
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = `
+      <div style='margin-bottom:8px;'><strong>Control Office:</strong> Noted. When will you be chanced to attend to the customer?</div>
+    `;
+  }
+
+  function sendResponse() {
+    const response = document.getElementById("mechanicResponse").value.trim();
+    const chatBox = document.getElementById("chatBox");
+
+    if (!response) {
+      alert("⚠️ Please enter your response time.");
+      return;
+    }
+
+    // Display mechanic reply and confirmation
+    chatBox.innerHTML += `
+      <div style='margin-bottom:8px; text-align:right;'><strong>You:</strong> ${response}</div>
+      <div style='margin-bottom:8px;'><strong>Control Office:</strong> Thank you! We'll update the customer.</div>
+    `;
+    document.getElementById("mechanicResponse").value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Wait 3 seconds, then return to job interface
+    setTimeout(() => {
+      document.getElementById("chatSection").style.display = "none";
+      document.getElementById("jobCard").style.display = "block";
+      document.getElementById("rejectBox").style.display = "none";
+      alert("✅ Response sent successfully. Returning to dashboard...");
+    }, 3000);
+  }
+</script>
+    
+</body>
+</html>

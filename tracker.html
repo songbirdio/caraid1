@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CairAid — Real-time Mechanic Tracker (Simulator)</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root{
+      --accent: #ff6600;
+      --muted: #6b7280;
+      --bg: #ffffff;
+      --card: #ffffff;
+      --shadow: 0 10px 30px rgba(15,23,42,0.06);
+      --radius: 12px;
+    }
+
+    html,body { height:100%; margin:0; font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial; background: #fff; color:#111827; }
+    .container {
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:20px;
+      height:100vh;
+      padding:20px;
+      box-sizing:border-box;
+    }
+    @media (max-width:980px){ .container{ grid-template-columns:1fr; grid-auto-rows:420px; padding:12px; } }
+
+    /* SIDEBAR */
+    .sidebar {
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height:0;
+    }
+    .brand { display:flex; align-items:center; gap:12px; }
+          img {
+        height: 50px;
+        width: 50px;
+        margin-top: 0px;
+      }
+    .brand h1 { margin:0; font-size:18px; }
+    .brand p { margin:0; font-size:12px; color:var(--muted); }
+
+    .controls { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+    .btn { border:none; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; font-size:13px; }
+    .btn-accent { background:var(--accent); color:white; box-shadow:0 8px 18px rgba(255,102,0,0.12); }
+    .btn-ghost { background:#f8fafc; color:#111827; border:1px solid #eef2f6; }
+    .small { padding:6px 10px; font-size:13px; }
+
+    .search { margin-top:8px; display:flex; gap:8px; align-items:center; }
+    .search input { flex:1; padding:10px; border-radius:10px; border:1px solid #eef2f6; font-size:14px; }
+
+    .mechanic-list { overflow:auto; padding-right:6px; margin-top:6px; }
+    .mechanic-card { display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px; transition:all .14s; margin-bottom:8px; border:1px solid transparent; cursor:pointer; }
+    .mechanic-card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(15,23,42,0.06); }
+    .m-avatar { width:56px; height:56px; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent); font-size:18px; border:1px solid #f3f4f6; }
+    .m-info { flex:1; min-width:0; }
+    .m-info h3 { margin:0; font-size:15px; display:flex; align-items:center; gap:8px; }
+    .m-info p { margin:6px 0 0 0; font-size:13px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    .badge { font-size:12px; padding:6px 8px; border-radius:999px; font-weight:700; color:white; }
+    .badge.available { background:#10b981; } .badge.busy { background:#ef4444; } .badge.idle { background:#f59e0b; }
+
+    .mechanic-card.active { border:1px solid rgba(255,102,0,0.14); box-shadow:0 12px 32px rgba(255,102,0,0.06); }
+
+    .sidebar-footer { margin-top:auto; display:flex; justify-content:space-between; gap:10px; align-items:center; font-size:13px; color:var(--muted); }
+
+    /* MAP PANE */
+    .map-pane { border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); position:relative; display:flex; flex-direction:column; }
+    #map { height:100%; width:100%; display:block; }
+
+    .map-overlay { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.96); border-radius:12px; padding:12px; box-shadow:0 8px 22px rgba(15,23,42,0.06); width:260px; font-size:14px; }
+    .map-overlay h4 { margin:0 0 6px 0; font-size:15px; display:flex; align-items:center; gap:8px; }
+    .map-overlay .row { display:flex; justify-content:space-between; gap:8px; margin-bottom:6px; color:var(--muted); }
+
+    .fab { position:absolute; bottom:18px; right:18px; z-index:1200; background:var(--accent); color:white; border-radius:14px; padding:12px 14px; font-weight:700; box-shadow:0 12px 28px rgba(255,102,0,0.18); cursor:pointer; }
+
+    .info-chip { display:inline-block; padding:6px 8px; border-radius:999px; background:#f8fafc; color:#111827; font-weight:600; border:1px solid #f0f4f8; }
+
+    /* Leaflet tweaks */
+    .leaflet-container { background:#eef6ff; }
+    .leaflet-control-attribution { display:none; } /* hide small attribution for cleaner demo */
+
+
+    /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <aside class="sidebar" aria-label="Mechanics sidebar">
+      <div class="brand">
+        <div><img src="logo.png" alt="CarAid"></div>
+        <div>
+          <h1>CarAid Mechanics</h1>
+          <p>Track your Mechanic | make you sabi how far</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="locateMeBtn" class="btn btn-ghost small">📍 Use My Location</button>
+        <button id="simToggleBtn" class="btn btn-accent small">■ Stop Simulation</button>
+        <button id="centerAllBtn" class="btn btn-ghost small">🔎 Fit All</button>
+      </div>
+
+      <div class="search">
+        <input id="searchInput" placeholder="Search mechanic name or vehicle..." />
+      </div>
+
+      <div class="mechanic-list" id="mechanicList" role="list"></div>
+
+      <div class="sidebar-footer">
+        <span>Showing <strong id="count">0</strong></span>
+        <span>Updated: <strong id="lastUpdate">—</strong></span>
+      </div>
+    </aside>
+
+    <section class="map-pane" aria-label="Map pane">
+      <div id="map"></div>
+
+      <div class="map-overlay" id="overlay">
+        <h4>Selected</h4>
+        <div class="row"><span id="selName">—</span><span id="selStatus" class="info-chip">—</span></div>
+        <div class="row"><small>Distance</small><strong id="selDistance">—</strong></div>
+        <div class="row"><small>ETA (min)</small><strong id="selEta">—</strong></div>
+        <div style="margin-top:8px"><button id="followBtn" class="btn btn-ghost small">Follow</button> <button id="zoomBtn" class="btn btn-ghost small">Zoom</button></div>
+      </div>
+
+      <div class="fab" id="shareFab">+ Live</div>
+    </section>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    /*******************
+     * Simulator Tracker
+     *******************/
+    const SIM_MS = 2500; // update frequency (ms)
+    const mechanicsSeed = [
+      { id:'m1', name:'Tunde • 0812', vehicle:'Toyota Hilux', lat:6.5250, lng:3.3750, status:'available', speed:40 },
+      { id:'m2', name:'Aisha • 0803', vehicle:'Ford Ranger', lat:6.5200, lng:3.3900, status:'idle', speed:20 },
+      { id:'m3', name:'Emeka • 0708', vehicle:'Isuzu', lat:6.5100, lng:3.3600, status:'busy', speed:0 },
+      { id:'m4', name:'Grace • 0904', vehicle:'Honda CRV', lat:6.5350, lng:3.3850, status:'available', speed:50 }
+    ];
+
+    // state
+    let mechById = {}, markers = {}, userPos = null, userMarker = null;
+    let map, mechLayer, simInterval = null, followingId = null;
+    let lastUpdate = null;
+
+    // utils
+    function toRad(v){ return v * Math.PI / 180; }
+    function haversine(lat1, lon1, lat2, lon2){
+      const R = 6371;
+      const dLat = toRad(lat2-lat1), dLon = toRad(lon2-lon1);
+      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); // km
+    }
+    function nowStr(){ const d=new Date(); return d.toLocaleTimeString(); }
+
+    // map init
+    function initMap(){
+      map = L.map('map', { zoomControl:true }).setView([6.5244, 3.3792], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution:'© OpenStreetMap contributors' }).addTo(map);
+      mechLayer = L.layerGroup().addTo(map);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+    }
+
+    // UI refs
+    const listEl = document.getElementById('mechanicList');
+    const countEl = document.getElementById('count');
+    const lastUpdateEl = document.getElementById('lastUpdate');
+
+    // create/update marker
+    function createOrUpdateMarker(m){
+      const color = m.status === 'available' ? '#10b981' : m.status === 'busy' ? '#ef4444' : '#f59e0b';
+      const label = (m.name||'').split(' ')[0].slice(0,10);
+      const html = `<div style="display:flex;align-items:center;gap:8px">
+                      <div style="width:10px;height:10px;border-radius:50%;background:${color};box-shadow:0 0 8px ${color}33"></div>
+                      <div style="background: white;padding:6px 8px;border-radius:8px;font-weight:700;color:#111;border:1px solid #f3f4f6">${label}</div>
+                    </div>`;
+
+      if(markers[m.id]){
+        markers[m.id].setLatLng([m.lat, m.lng]);
+        markers[m.id].setPopupContent(popupHtml(m));
+      } else {
+        const icon = L.divIcon({ html, className:'', iconSize:[140,36], iconAnchor:[70,18] });
+        const mk = L.marker([m.lat, m.lng], { icon }).addTo(mechLayer);
+        mk.on('click', ()=> selectMechanic(m.id, true));
+        mk.bindPopup(popupHtml(m));
+        markers[m.id] = mk;
+      }
+    }
+
+    function popupHtml(m){
+      const dist = userPos ? (haversine(userPos.lat,userPos.lng,m.lat,m.lng)*1000).toFixed(0)+' m' : '—';
+      return `<div style="min-width:220px"><strong>${m.name}</strong>
+        <div style="color:${'#6b7280'};margin-top:6px">${m.vehicle||''}</div>
+        <div style="margin-top:8px;font-size:13px">Status: <strong>${m.status}</strong></div>
+        <div style="margin-top:6px;font-size:13px">Distance: <strong>${dist}</strong></div>
+        <div style="margin-top:8px"><small style="color:#6b7280">Last: ${m.updated?m.updated.toLocaleTimeString():'—'}</small></div></div>`;
+    }
+
+    // render list
+    function renderList(filter=''){
+      listEl.innerHTML='';
+      const arr = Object.values(mechById).filter(m => !filter || (m.name+' '+(m.vehicle||'')).toLowerCase().includes(filter.toLowerCase()));
+      countEl.textContent = arr.length;
+      for(const m of arr){
+        const card = document.createElement('div');
+        card.className = 'mechanic-card' + (followingId===m.id ? ' active':'');
+        const av = document.createElement('div'); av.className='m-avatar'; av.textContent = (m.name||'').split(' ')[0].slice(0,2).toUpperCase();
+        const info = document.createElement('div'); info.className='m-info';
+        const h = document.createElement('h3'); h.textContent = m.name;
+        const badge = document.createElement('span'); badge.className = 'badge ' + (m.status==='available'?'available':m.status==='busy'?'busy':'idle'); badge.textContent = m.status.toUpperCase();
+        h.appendChild(badge);
+        const p = document.createElement('p'); p.textContent = `${m.vehicle || ''} • Last: ${m.updated?formatTimeAgo(m.updated):'—'}`;
+        info.appendChild(h); info.appendChild(p);
+        card.appendChild(av); card.appendChild(info);
+        card.addEventListener('click', ()=> selectMechanic(m.id, true) );
+        listEl.appendChild(card);
+      }
+      lastUpdateEl.textContent = lastUpdate ? lastUpdate.toLocaleTimeString() : '—';
+    }
+
+    function formatTimeAgo(d){
+      const s = Math.floor((Date.now()-d.getTime())/1000);
+      if(s<10) return 'just now';
+      if(s<60) return s+'s';
+      if(s<3600) return Math.floor(s/60)+'m';
+      return Math.floor(s/3600)+'h';
+    }
+
+    // select mechanic
+    function selectMechanic(id, center=false){
+      followingId = id;
+      const m = mechById[id];
+      if(!m) return;
+      document.getElementById('selName').textContent = m.name;
+      document.getElementById('selStatus').textContent = m.status.toUpperCase();
+      if(userPos){
+        const distKm = haversine(userPos.lat,userPos.lng,m.lat,m.lng);
+        document.getElementById('selDistance').textContent = `${(distKm*1000).toFixed(0)} m`;
+        const eta = m.speed > 0 ? Math.max(1, Math.round((distKm / (m.speed/60)))) : '—';
+        document.getElementById('selEta').textContent = eta;
+      } else {
+        document.getElementById('selDistance').textContent = '—';
+        document.getElementById('selEta').textContent = '—';
+      }
+      if(markers[id]){
+        markers[id].openPopup();
+        if(center) map.setView([m.lat,m.lng],15,{animate:true});
+      }
+      renderList(document.getElementById('searchInput').value);
+    }
+
+    // user locate
+    document.getElementById('locateMeBtn').addEventListener('click', ()=>{
+      if(!navigator.geolocation) return alert('Geolocation not supported.');
+      navigator.geolocation.getCurrentPosition(pos=>{
+        userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        if(userMarker) userMarker.setLatLng([userPos.lat,userPos.lng]);
+        else userMarker = L.circleMarker([userPos.lat,userPos.lng], { radius:8, color:'#2563eb', fillColor:'#2563eb', fillOpacity:0.9 }).addTo(map);
+        map.setView([userPos.lat,userPos.lng],14);
+        if(followingId) selectMechanic(followingId);
+      }, ()=> alert('Unable to fetch location. Allow location permissions.'));
+    });
+
+    // fab
+    document.getElementById('shareFab').addEventListener('click', ()=> {
+      alert('Open booking page or Settings → enable Live Location. (This demo shows how you would share.)');
+    });
+
+    // simulation engine
+    function startSimulation(){
+      if(simInterval) return;
+      simInterval = setInterval(()=> {
+        for(const m of Object.values(mechById)){
+          // small random walk if status isn't busy; busy stays mostly still
+          const moveProb = m.status==='busy' ? 0.3 : 0.9;
+          if(Math.random() < moveProb){
+            const angle = Math.random()*Math.PI*2;
+            const kmDeg = 0.0015 * (m.speed/30 + 0.5); // scaled by speed
+            m.lat += Math.cos(angle) * kmDeg;
+            m.lng += Math.sin(angle) * kmDeg;
+          }
+          if(Math.random() < 0.05) m.status = ['available','busy','idle'][Math.floor(Math.random()*3)];
+          m.updated = new Date();
+          createOrUpdateMarker(m);
+        }
+        lastUpdate = new Date();
+        renderList(document.getElementById('searchInput').value);
+        // follow
+        if(followingId && markers[followingId]) {
+          const mm = mechById[followingId];
+          map.panTo([mm.lat, mm.lng], { animate:true });
+          selectMechanic(followingId);
+        }
+      }, SIM_MS);
+      document.getElementById('simToggleBtn').textContent = '■ Stop Simulation';
+    }
+    function stopSimulation(){
+      if(!simInterval) return;
+      clearInterval(simInterval); simInterval = null;
+      document.getElementById('simToggleBtn').textContent = '▶ Simulate';
+    }
+    document.getElementById('simToggleBtn').addEventListener('click', ()=>{
+      if(simInterval) stopSimulation(); else startSimulation();
+    });
+
+    // fit all
+    document.getElementById('centerAllBtn').addEventListener('click', ()=>{
+      const coords = Object.values(mechById).map(m=>[m.lat,m.lng]);
+      if(coords.length) map.fitBounds(coords, { padding:[80,80] });
+    });
+
+    // search filter
+    document.getElementById('searchInput').addEventListener('input', (e)=> renderList(e.target.value));
+
+    // zoom/follow overlay buttons
+    document.getElementById('followBtn').addEventListener('click', ()=>{
+      if(!followingId) return alert('Select a mechanic first.');
+      const m = mechById[followingId]; map.setView([m.lat,m.lng],15,{animate:true});
+    });
+    document.getElementById('zoomBtn').addEventListener('click', ()=>{
+      if(!followingId) return alert('Select a mechanic first.');
+      const m = mechById[followingId]; map.fitBounds([[m.lat-0.004,m.lng-0.004],[m.lat+0.004,m.lng+0.004]]);
+    });
+
+    // bootstrap
+    function boot(){
+      initMap();
+      // load seed mechanics
+      for(const s of mechanicsSeed){
+        mechById[s.id] = Object.assign({}, s, { updated: new Date() });
+        createOrUpdateMarker(mechById[s.id]);
+      }
+      lastUpdate = new Date();
+      renderList();
+      selectMechanic(Object.keys(mechById)[0]);
+      // start simulation automatically
+      startSimulation();
+    }
+
+    // start
+    boot();
+  </script>
+</body>
+</html>

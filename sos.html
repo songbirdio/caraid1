@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CarAid | Mechanic SOS Mode</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: #0e0e0e;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .activate-sos {
+      background: #ff6600;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .activate-sos:hover {
+      background: #e05500;
+    }
+
+    /* SOS overlay */
+    .sos-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 10, 10, 0.95);
+      color: white;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      z-index: 9999;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .sos-content {
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 30px;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+    }
+
+    .sos-content h2 {
+      color: #ff4b4b;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    #sosStatus {
+      margin-top: 8px;
+      color: #ffcccc;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .video-preview video {
+      width: 100%;
+      max-height: 300px;
+      border-radius: 10px;
+      border: 2px solid #ff4b4b;
+      margin-top: 15px;
+      background: black;
+    }
+
+    .stop-btn {
+      background: #ff4b4b;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-top: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    .stop-btn:hover {
+      background: #cc0000;
+    }
+
+    #sosStatus::after {
+      content: " ●";
+      color: red;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="activate-sos" id="activateSOS">
+    <i class="fas fa-exclamation-triangle"></i> Activate SOS
+  </button>
+
+  <div id="sosOverlay" class="sos-overlay">
+    <div class="sos-content">
+      <h2><i class="fas fa-exclamation-triangle"></i> Emergency Recording</h2>
+      <p id="sosStatus">Starting recording...</p>
+
+      <div class="video-preview">
+        <video id="sosVideo" autoplay muted></video>
+      </div>
+
+      <button id="stopSOS" class="stop-btn">
+        <i class="fas fa-stop-circle"></i> Stop & Exit
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const sosOverlay = document.getElementById("sosOverlay");
+    const sosVideo = document.getElementById("sosVideo");
+    const sosStatus = document.getElementById("sosStatus");
+    const stopSOS = document.getElementById("stopSOS");
+    const activateSOS = document.getElementById("activateSOS");
+
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    // === Activate SOS ===
+    activateSOS.addEventListener("click", async () => {
+      sosOverlay.style.display = "flex";
+      await startRecording();
+    });
+
+    // === Start Recording ===
+    async function startRecording() {
+      sosStatus.textContent = "Initializing camera and microphone...";
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        sosVideo.srcObject = stream;
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstart = () => {
+          sosStatus.textContent = "Recording incident... stay calm.";
+        };
+
+        mediaRecorder.start();
+
+        // Detect if SOS overlay is closed or tab is exited
+        window.addEventListener("beforeunload", autoSendRecording);
+        sosOverlay.addEventListener("transitionend", () => {
+          if (sosOverlay.style.display === "none") autoSendRecording();
+        });
+      } catch (err) {
+        sosStatus.textContent = "⚠️ Access denied: please allow camera & microphone.";
+        console.error("Recording failed:", err);
+      }
+    }
+
+    // === Stop manually ===
+    stopSOS.addEventListener("click", () => {
+      sosOverlay.style.display = "none";
+      autoSendRecording();
+    });
+
+    // === Auto-send when SOS overlay closes ===
+    function autoSendRecording() {
+      if (!mediaRecorder || mediaRecorder.state === "inactive") return;
+
+      mediaRecorder.stop();
+      sosStatus.textContent = "Saving and sending recording...";
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: "video/webm" });
+        console.log("🚀 Auto-uploading SOS recording to HQ:", blob);
+
+        // Simulate upload
+        setTimeout(() => {
+          alert("📡 Recording successfully transmitted to HQ.");
+        }, 2000);
+      };
+    }
+  </script>
+
+</body>
+</html>

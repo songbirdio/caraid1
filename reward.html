@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rewards - CarAid</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f9;
+    }
+
+    h1 {
+      color: #1f3c88;
+      margin-bottom: 20px;
+    }
+
+    .rewards-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .reward-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .reward-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .reward-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .reward-header i {
+      font-size: 28px;
+      color: #ff6600;
+    }
+
+    .reward-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .reward-details {
+      margin-top: 10px;
+      color: #555;
+    }
+
+    .reward-details p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+
+    .reward-footer {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #888;
+      text-align: right;
+    }
+    /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <h1>🎁 Rewards & Invitations</h1>
+
+  <div class="rewards-container" id="rewardsList">
+    <!-- Rewards will be injected here -->
+  </div>
+
+  <script>
+    // Expanded rewards data (7 rewards)
+    const rewards = [
+      {
+        id: 1,
+        type: "Bonus",
+        title: "Loyalty Bonus",
+        reason: "Awarded for completing 5 successful mechanic requests in September.",
+        date: "2025-10-05",
+        time: "12:00 PM",
+        venue: "CarAid HQ, Lagos",
+      },
+      {
+        id: 2,
+        type: "Award Invitation",
+        title: "Top Customer Recognition",
+        reason: "Invitation to the CarAid annual customer excellence award ceremony.",
+        date: "2025-11-15",
+        time: "5:00 PM",
+        venue: "Eko Hotel, Victoria Island, Lagos",
+      },
+      {
+        id: 3,
+        type: "Item",
+        title: "Free Car Wash Coupon",
+        reason: "Earned after subscribing to the Executive Plan.",
+        date: "2025-09-28",
+        time: "All Day",
+        venue: "Any CarAid Partner Station",
+      },
+      {
+        id: 4,
+        type: "Bonus",
+        title: "Referral Bonus",
+        reason: "Reward for referring 3 new customers to CarAid.",
+        date: "2025-10-10",
+        time: "2:00 PM",
+        venue: "Online Wallet",
+      },
+      {
+        id: 5,
+        type: "Award Invitation",
+        title: "VIP Gala Night",
+        reason: "Exclusive invitation for top-tier customers to network and celebrate achievements.",
+        date: "2025-12-20",
+        time: "7:00 PM",
+        venue: "Transcorp Hilton, Abuja",
+      },
+      {
+        id: 6,
+        type: "Item",
+        title: "Fuel Voucher",
+        reason: "Granted after completing your first emergency mechanic request.",
+        date: "2025-09-30",
+        time: "All Day",
+        venue: "All NNPC Fuel Stations",
+      },
+      {
+        id: 7,
+        type: "Bonus",
+        title: "Holiday Bonus",
+        reason: "Special bonus for using CarAid services during festive seasons.",
+        date: "2025-12-24",
+        time: "10:00 AM",
+        venue: "Credited to Wallet",
+      }
+    ];
+
+    const rewardsList = document.getElementById("rewardsList");
+
+    function renderRewards() {
+      rewardsList.innerHTML = rewards.map(r => `
+        <div class="reward-card">
+          <div class="reward-header">
+            <i class="fas ${r.type === 'Bonus' ? 'fa-gift' : r.type === 'Item' ? 'fa-box' : 'fa-award'}"></i>
+            <h2>${r.title}</h2>
+          </div>
+          <div class="reward-details">
+            <p><strong>Reason:</strong> ${r.reason}</p>
+            <p><strong>Date:</strong> ${r.date}</p>
+            <p><strong>Time:</strong> ${r.time}</p>
+            <p><strong>Venue:</strong> ${r.venue}</p>
+          </div>
+          <div class="reward-footer">Category: ${r.type}</div>
+        </div>
+      `).join("");
+    }
+
+    // Load rewards
+    renderRewards();
+  </script>
+
+</body>
+</html>

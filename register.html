@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanic Registration - CarAid</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #1f3c88, #ff6600);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+        /*logo*/
+    img {
+      height: 40px;
+      width: 40px;
+      justify-content: center;
+      align-items: center;
+      margin-left: 180px;
+      margin-top: -40px;
+    }
+
+    .registration-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1f3c88;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: #1f3c88;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #ff6600;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      background: #e05500;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .unique-code {
+      text-align: center;
+      font-weight: bold;
+      color: #1f3c88;
+      margin-bottom: 15px;
+    }
+
+    /* ✅ Universal Responsive Template */
+
+/* Default: Desktop / Large Screens */
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Smartphones (portrait & small screens ≤600px) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .container, .chatroom, .page-section {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Tablets (601px – 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
+  .container, .chatroom, .page-section {
+    width: 90% !important;
+    margin: auto;
+  }
+}
+
+/* Landscape & Extra-wide screens */
+@media only screen and (orientation: landscape) {
+  body {
+    font-size: 17px;
+  }
+  .container, .chatroom, .page-section {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
+  </style>
+</head>
+<body>
+        
+  <div class="registration-container">
+    <img src="logo.png" alt="CarAid">
+    <h2>Mechanic Registration</h2>
+
+    <!-- STEP 1 -->
+    <form id="step1">
+      <div class="form-group">
+        <label for="passport">Passport Photo</label>
+        <input type="file" id="passport" name="passport" accept="image/*" required>
+      </div>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dob" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number (with Country Code)</label>
+        <input type="tel" id="phone" name="phone" placeholder="+234 800 000 0000" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <button type="submit" class="submit-btn">Next</button>
+    </form>
+
+    <!-- STEP 2 -->
+    <form id="step2" class="hidden">
+      <p class="unique-code" id="uniqueCode"></p>
+
+      <div class="form-group">
+        <label for="nin">National Identification Number (NIN)</label>
+        <input type="text" id="nin" name="nin" required>
+      </div>
+      <div class="form-group">
+        <label for="bvn">Bank Verification Number (BVN)</label>
+        <input type="text" id="bvn" name="bvn" required>
+      </div>
+      <div class="form-group">
+        <label for="voterCard">Upload Voter’s Card</label>
+        <input type="file" id="voterCard" name="voterCard" accept="image/*" required>
+      </div>
+
+      <button type="submit" class="submit-btn">Final Submit</button>
+    </form>
+  </div>
+
+  <script>
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
+    const uniqueCodeEl = document.getElementById("uniqueCode");
+
+    // Handle Step 1 submission
+    step1.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Generate unique code: CA + 8 random digits
+      let uniqueCode = "CA" + Math.floor(10000000 + Math.random() * 90000000);
+      uniqueCodeEl.textContent = "Your Unique Mechanic Code: " + uniqueCode;
+
+      // Hide Step 1 and show Step 2
+      step1.classList.add("hidden");
+      step2.classList.remove("hidden");
+    });
+
+    // Handle Step 2 submission
+    step2.addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Registration submitted successfully!");
+      // Here you’d typically send the form data to the backend
+    });
+    // Example: inside your form submission handler
+step2.addEventListener("submit", function(e) {
+  e.preventDefault();
+  alert("Registration submitted successfully!");
+  
+  // Redirect to onboarding page in another folder
+  window.location.href = "onboarding.html";  // adjust path
+});
+
+  </script>
+
+</body>
+</html>

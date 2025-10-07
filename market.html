@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CairAid Marketplace</title>
+  <style>
+    :root {
+      --primary: #ff6600;
+      --bg: #ffffff;
+      --text: #333333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+          /*logo*/
+      img {
+        height: 80px;
+        width: 80px;
+        align-items: center;
+        margin-top: 0px;
+      }
+
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 20px;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      background: #f5f5f5;
+      padding: 10px;
+    }
+
+    select, input {
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .item {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    }
+
+    .item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+    .item .info {
+      padding: 10px;
+      text-align: center;
+    }
+    .item .info h4 {
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #222;
+    }
+    .item .info p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .item .price {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      background: #f9f9f9;
+      color: #777;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      header { font-size: 16px; }
+      .market-grid { padding: 10px; gap: 10px; }
+      .item .info h4 { font-size: 13px; }
+      .item .info p { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+<img src="logo.png" alt="CarAid">
+  <header>⚙️ CairAid Marketplace</header>
+
+  <div class="controls">
+    <select id="categoryFilter">
+      <option value="all">All Categories</option>
+      <option value="cars">Cars</option>
+      <option value="motorcycles">Motorcycles</option>
+      <option value="electronics">Electronics</option>
+      <option value="carparts">Car Parts</option>
+      <option value="electrical">Electrical Parts</option>
+    </select>
+    <input type="text" id="searchBox" placeholder="Search products...">
+  </div>
+
+  <div class="market-grid" id="marketGrid"></div>
+
+  <footer>© 2025 CairAid Marketplace. All rights reserved.</footer>
+
+  <script>
+    const items = [];
+
+    // Generate 60 sample items
+    const categories = ["cars", "motorcycles", "electronics", "carparts", "electrical"];
+    const sampleNames = {
+      cars: ["Toyota Camry", "Honda Accord", "Ford Focus", "BMW 3 Series", "Lexus RX"],
+      motorcycles: ["Yamaha R6", "Honda CBR", "Suzuki GSX", "Ducati Monster", "Kawasaki Ninja"],
+      electronics: ["Samsung TV", "iPhone 14", "Dell Laptop", "PlayStation 5", "Canon Camera"],
+      carparts: ["Engine Oil", "Brake Pads", "Headlight", "Car Battery", "Radiator"],
+      electrical: ["Fuse Box", "Power Cable", "Alternator", "Starter Motor", "Relay Switch"]
+    };
+
+    const sampleImages = {
+      cars: "https://source.unsplash.com/300x200/?car",
+      motorcycles: "https://source.unsplash.com/300x200/?motorcycle",
+      electronics: "https://source.unsplash.com/300x200/?electronics",
+      carparts: "https://source.unsplash.com/300x200/?car-parts",
+      electrical: "https://source.unsplash.com/300x200/?electrical"
+    };
+
+    for (let i = 0; i < 60; i++) {
+      const cat = categories[i % categories.length];
+      const nameArr = sampleNames[cat];
+      const name = nameArr[Math.floor(Math.random() * nameArr.length)];
+      const price = (Math.random() * 900 + 100).toFixed(2);
+      items.push({
+        id: i + 1,
+        name: name,
+        category: cat,
+        price: `$${price}`,
+        image: sampleImages[cat],
+        desc: `High-quality ${cat} product from trusted dealers.`
+      });
+    }
+
+    const grid = document.getElementById("marketGrid");
+    const filter = document.getElementById("categoryFilter");
+    const search = document.getElementById("searchBox");
+
+    function renderItems(filteredItems) {
+      grid.innerHTML = "";
+      filteredItems.forEach(item => {
+        const div = document.createElement("div");
+        div.classList.add("item");
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="info">
+            <h4>${item.name}</h4>
+            <p>${item.desc}</p>
+            <div class="price">${item.price}</div>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function applyFilters() {
+      const searchText = search.value.toLowerCase();
+      const cat = filter.value;
+      const filtered = items.filter(it =>
+        (cat === "all" || it.category === cat) &&
+        it.name.toLowerCase().includes(searchText)
+      );
+      renderItems(filtered);
+    }
+
+    filter.addEventListener("change", applyFilters);
+    search.addEventListener("input", applyFilters);
+
+    // Initial render
+    renderItems(items);
+  </script>
+</body>
+</html>
